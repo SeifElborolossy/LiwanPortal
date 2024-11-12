@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import '../../components/i18n'; // Import i18n config
+import '../../components/ui/i18n'; // Import i18n config
 import ThemeSwitcher from '../../components/ui/ThemeSwitcher';
 
 const LoginPage = () => {
