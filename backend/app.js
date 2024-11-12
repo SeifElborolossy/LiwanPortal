@@ -1,9 +1,11 @@
 const express = require("express");
 const session = require("express-session");
 const morgan = require("morgan");
+const companyRouter = require("./routes/company");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 
 const sequelize = require("./config/db"); // Sequelize instance
+
 
 const app = express();
 app.use(express.json());
@@ -81,13 +83,13 @@ app.post("/logout", (req, res) => {
     res.json({ message: "Logged out successfully" });
   });
 });
-
 const requireAuth = (req, res, next) => {
   if (!req.session.user) {
     return res.status(401).json({ message: "Authentication required" });
   }
   next();
 };
+app.use("/api/v1/companies", companyRouter);
 
 app.get("/protected", requireAuth, authorize(["test"]), (req, res) => {
   res.json({ message: "This is a protected route", user: req.session.user });
