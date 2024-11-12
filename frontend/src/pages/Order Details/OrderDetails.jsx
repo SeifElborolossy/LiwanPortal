@@ -90,7 +90,7 @@ export default function OrderDetailsPage() {
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Order Details</h1>
         <div className="space-x-2">
-          <Link href='edit-details'>
+          <Link to='/edit-order'>
             <Button>Edit Order</Button>
           </Link>
           <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
