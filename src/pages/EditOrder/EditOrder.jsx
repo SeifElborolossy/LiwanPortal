@@ -14,7 +14,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import ThemeSwitcher from '../../components/ui/ThemeSwitcher'
-import { Link } from 'react-router-dom';
 
 const priorityColors = {
   Critical: "bg-red-500",
@@ -74,7 +73,7 @@ const dummyOrderDetails = {
   orderPriority: "Critical",
 }
 
-export default function OrderDetailsPage() {
+export default function EditOrderPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   const handleDeleteOrder = () => {
@@ -90,9 +89,7 @@ export default function OrderDetailsPage() {
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Order Details</h1>
         <div className="space-x-2">
-          <Link href='edit-details'>
-            <Button>Edit Order</Button>
-          </Link>
+          <Button>Edit Order</Button>
           <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
             <Trash2 className="w-4 h-4 mr-2" />
             Delete Order
