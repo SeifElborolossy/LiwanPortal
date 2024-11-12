@@ -13,6 +13,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import ThemeSwitcher from '../../components/ui/ThemeSwitcher'
 
 const priorityColors = {
   Critical: "bg-red-500",
@@ -29,14 +30,19 @@ const statusColors = {
   "Work In Process": "bg-blue-500",
 }
 
+// eslint-disable-next-line react/prop-types
 function StatusBadge({ status }) {
   return (
+    <div>
+      
     <Badge className={`${statusColors[status]} text-white`}>
       {status}
     </Badge>
+    </div>
   )
 }
 
+// eslint-disable-next-line react/prop-types
 function PriorityBadge({ priority }) {
   return (
     <Badge className={`${priorityColors[priority]} text-white`}>
@@ -78,6 +84,7 @@ export default function OrderDetailsPage() {
 
   return (
     <div className="container mx-auto p-4 space-y-6">
+      <ThemeSwitcher/>
         {/* Header >> Title, Edit & Delete Buttons */}
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Order Details</h1>

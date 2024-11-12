@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
