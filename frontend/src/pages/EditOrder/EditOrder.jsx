@@ -89,7 +89,6 @@ export default function EditOrderPage() {
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Order Details</h1>
         <div className="space-x-2">
-          <Button>Edit Order</Button>
           <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
             <Trash2 className="w-4 h-4 mr-2" />
             Delete Order
