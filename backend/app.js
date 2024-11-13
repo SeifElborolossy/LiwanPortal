@@ -52,7 +52,7 @@ app.use("/api/v1/auth", authRouter);
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
-
+/////
 // app.get("/protected", requireAuth, authorize(["test"]), (req, res) => {
 //   res.json({ message: "This is a protected route", user: req.session.user });
 // });
