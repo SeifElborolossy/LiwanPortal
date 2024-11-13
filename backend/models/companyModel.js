@@ -1,14 +1,13 @@
 const Sequelize = require("sequelize");
 const db = require("../config/db");
-
 const Company = db.define(
   "company",
   {
     id: {
       type: Sequelize.INTEGER,
+      autoIncrement: true,
       allowNull: false,
       primaryKey: true,
-      autoIncrement: true,
     },
     name: {
       type: Sequelize.STRING,
@@ -40,9 +39,6 @@ const Company = db.define(
     email: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: {
-        msg: "This email already exists",
-      },
       validate: {
         notNull: {
           msg: "Email cannot be null",
@@ -86,10 +82,8 @@ const Company = db.define(
   },
   {
     tableName: "company",
-    timestamps: false, 
+    timestamps: false,
   }
 );
-
-
 
 module.exports = Company;
