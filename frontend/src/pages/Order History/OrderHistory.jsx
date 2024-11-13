@@ -26,7 +26,7 @@ import { CalendarIcon, Filter } from "lucide-react";
 // Custom Components
 import Widgets from "./Widgets";
 import TableRowComponent from "./TableRowComponent";
-import ThemeSwitcher from "../../components/ui/ThemeSwitcher";
+
 
 export default function OrderHistory() {
   const [search, setSearch] = useState("");
@@ -110,7 +110,7 @@ export default function OrderHistory() {
 
   return (
     <div className="mx-auto py-10 w-full min-h-screen">
-      <ThemeSwitcher/>
+
       <div className="content container mx-auto p-8">
         <h1 className="text-2xl font-bold mb-2">Orders History</h1>
         <p className="text-gray-600 mb-6">

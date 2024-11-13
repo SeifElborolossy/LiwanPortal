@@ -6,6 +6,8 @@ import { Fragment} from 'react';
 import EditOrder from './pages/EditOrder/EditOrder';
 import Schedule from './pages/Schedule/Schedule';
 import SubmitOrder from "./pages/Submit Order/SubmitOrder";
+import ThemeSwitcher from "./components/ui/ThemeSwitcher";
+
 
 
 
@@ -13,6 +15,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <Fragment>
+        <ThemeSwitcher/>
         <Routes>
             <Route exact path="/" element= {<LiwanPortal/>}/>
             <Route exact path="/order-history" element= {<OrderHistory/>}/>
