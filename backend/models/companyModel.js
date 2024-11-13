@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 const db = require("../config/db");
-
+const generateId = require("../utils/generateid");
 const Company = db.define(
   "company",
   {
@@ -8,7 +8,7 @@ const Company = db.define(
       type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true,
-      autoIncrement: true,
+      defaultValue: generateId,
     },
     name: {
       type: Sequelize.STRING,
@@ -86,10 +86,8 @@ const Company = db.define(
   },
   {
     tableName: "company",
-    timestamps: false, 
+    timestamps: false,
   }
 );
-
-
 
 module.exports = Company;

@@ -4,7 +4,6 @@ const AppError = require("../utils/AppError");
 
 exports.getallCompanies = catchAsync(async (req, res, next) => {
   const companies = await Company.findAll();
-
   res.status(200).json({
     status: "success",
     data: {
