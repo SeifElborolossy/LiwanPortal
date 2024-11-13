@@ -5,6 +5,7 @@ import { BrowserRouter,Routes,Route} from 'react-router-dom';
 import { Fragment} from 'react';
 import EditOrder from './pages/EditOrder/EditOrder';
 import Schedule from './pages/Schedule/Schedule';
+import SubmitOrder from "./pages/Submit Order/SubmitOrder";
 
 
 
@@ -18,6 +19,7 @@ const App = () => {
             <Route exact path="/order-details" element= {<OrderDetails/>}/>
             <Route exact path="/edit-order" element= {<EditOrder/>}/>
             <Route exact path="/schedule" element= {<Schedule/>}/>
+            <Route exact path="/submit-order" element= {<SubmitOrder/>}/>
         </Routes>
       </Fragment>        
     </BrowserRouter>
