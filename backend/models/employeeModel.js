@@ -1,18 +1,16 @@
-// models/Person.js
+// models/Employee.js
 const Sequelize = require("sequelize");
 const { DataTypes } = require("sequelize");
 const validator = require("validator");
 const db = require("../config/db"); // Import Sequelize instance
-const generateId = require('../utils/generateID')
 
 
-
-const Person = db.define("Person", {
+const Employee = db.define("employee", {
   id: {
     type: Sequelize.INTEGER,
     allowNull: false,
     primaryKey: true,
-    defaultValue : generateId
+    autoIncrement: true,
   },
   name: {
     type: DataTypes.STRING,
@@ -50,7 +48,7 @@ const Person = db.define("Person", {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  extensionNumber: {
+  extension_number: {
     type: DataTypes.INTEGER,
     allowNull: false,
     validate: {
@@ -69,20 +67,23 @@ const Person = db.define("Person", {
       },
     },
   },
-  role: {
-    type: DataTypes.STRING,
+  role_id: {
+    type: DataTypes.INTEGER,
     allowNull: false,
     validate: {
       notNull: { msg: "Role is required." },
       notEmpty: { msg: "Role cannot be empty." },
-      isIn: {
-        args: [["admin", "manager", "employee"]],
-        msg: "Role must be either 'admin', 'manager', or 'employee'.",
-      },
     },
+    references: {
+      model: 'roles',
+      key: 'id'
+    }
   },
+},
+{
+  timestamps: false,
+  tableName: "employee",
 });
 
 
-
-module.exports = Person;
+module.exports = Employee;

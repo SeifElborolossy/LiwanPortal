@@ -5,8 +5,8 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(roleController.getAll)
-//  .post(companyController.createCompany);
+  .get(roleController.getAllRoles)
+  .post(roleController.createRole);
 
 
 

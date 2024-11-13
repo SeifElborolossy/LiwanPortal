@@ -15,4 +15,6 @@ router
   .get(companyController.getCompanyById)
   .patch(companyController.updateCompany)
   .delete(companyController.deleteCompany);
+
+  
 module.exports = router;

@@ -1,6 +1,5 @@
 const Sequelize = require("sequelize");
 const db = require("../config/db");
-const generateId = require('../utils/generateID')
 
 const Company = db.define(
   "company",
@@ -9,7 +8,7 @@ const Company = db.define(
       type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true,
-      defaultValue : generateId
+      autoIncrement: true,
     },
     name: {
       type: Sequelize.STRING,

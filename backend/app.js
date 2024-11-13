@@ -2,9 +2,11 @@ const express = require("express");
 const session = require("express-session");
 const morgan = require("morgan");
 const companyRouter = require("./routes/company");
-const personRouter = require('./routes/person')
+const employeeRouter = require('./routes/employee')
+const authRouter = require('./routes/auth')
 const roleRouter = require('./routes/role')
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
+
 
 const sequelize = require("./config/db"); // Sequelize instance
 
@@ -29,9 +31,10 @@ sessionStore.sync().catch((err) => {
 app.use(
   session({
     store: sessionStore,
+    name: "session",
     secret: process.env.SESSION_SECRET || "default-secret",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
@@ -41,67 +44,16 @@ app.use(
   })
 );
 
-function authorize(allowedRoles) {
-  return (req, res, next) => {
-    const role = req.session.user.role;
-    console.log(role);
 
-    // Check if user is logged in and has the required role
-    if (role && allowedRoles.includes(role)) {
-      return next(); // User is authorized
-    }
-
-    res.status(403).send("Access forbidden: Insufficient permissions");
-  };
-}
-
-app.post("/login", (req, res) => {
-  const { username, password } = req.body;
-
-  req.session.user = {
-    id: 1,
-    username: username,
-    role: "test",
-    loggedInAt: new Date(),
-  };
-
-  res.json({ message: "Logged in successfully" });
-});
-
-app.get("/profile", (req, res) => {
-  // Check if user is authenticated
-  if (!req.session.user) {
-    return res.status(401).json({ message: "Not authenticated" });
-  }
-
-  res.json({ user: req.session.user });
-});
-
-app.post("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ message: "Error logging out" });
-    }
-    res.json({ message: "Logged out successfully" });
-  });
-});
-const requireAuth = (req, res, next) => {
-  if (!req.session.user) {
-    return res.status(401).json({ message: "Authentication required" });
-  }
-  next();
-};
 app.use("/api/v1/companies", companyRouter);
-app.use("/api/v1/persons", personRouter);
+app.use("/api/v1/employees", employeeRouter);
 app.use("/api/v1/roles", roleRouter);
+app.use("/api/v1/login", authRouter);
 
 
-app.get("/protected", requireAuth, authorize(["test"]), (req, res) => {
-  res.json({ message: "This is a protected route", user: req.session.user });
-});
+// app.get("/protected", requireAuth, authorize(["test"]), (req, res) => {
+//   res.json({ message: "This is a protected route", user: req.session.user });
+// });
 
-app.get("/", (req, res) => {
-  console.log("hello");
-});
 
 module.exports = app;

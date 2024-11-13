@@ -25,16 +25,38 @@ exports.getCompanyById = catchAsync(async (req, res) => {
     },
   });
 });
+
 exports.createCompany = catchAsync(async (req, res, next) => {
-  const company = await Company.create(req.body);
-  if (!company) next(new AppError("failed to create Company", 400));
-  res.status(201).json({
-    status: "success",
-    data: {
-      company,
-    },
-  });
-});
+  try {
+    const company = await Company.create(req.body);
+    
+    res.status(201).json({
+      status: "success",
+      data: {
+        company,
+      },
+    });
+  } catch (error) {
+    if (error.name === 'SequelizeValidationError') {
+      const notNullErrors = error.errors
+        .filter(err => err.type === 'notNull Violation')
+        .map(err => ({
+          field: err.path,
+          message: `${err.path} is required`
+        }));
+      
+      if (notNullErrors.length > 0) {
+        return res.status(400).json({
+          status: 'fail',
+          errors: notNullErrors
+        });
+      }
+    }
+    
+    return next(error);
+  }
+ });
+
 exports.updateCompany = catchAsync(async (req, res) => {
   const companyId = req.params.id;
   const company = await Company.findByPk(companyId);
@@ -48,6 +70,7 @@ exports.updateCompany = catchAsync(async (req, res) => {
       company,
     },
   });
+  
 });
 exports.deleteCompany = catchAsync(async (req, res) => {
   const companyId = req.params.id;

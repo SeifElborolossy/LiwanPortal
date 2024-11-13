@@ -1,14 +1,12 @@
 const Sequelize = require("sequelize");
 const db = require("../config/db");
-const generateId = require('../utils/generateID')
-const Person = require('../models/personModel')
 
 const Role = db.define("role", {
   id: {
     type: Sequelize.INTEGER,
     allowNull: false,
     primaryKey: true,
-    defaultValue : generateId
+    autoIncrement: true,
   },
   name: {
     type: Sequelize.STRING,
@@ -34,19 +32,11 @@ const Role = db.define("role", {
       },
     },
   },
+},
+{
+  timestamps: false,
+  tableName: "roles",
 });
-
-// One to M
-Role.hasMany(Person, {
-  foreignKey: 'roleId',
-  as: 'users'
-})
-
-//Many to one
-Person.belongsTo(Role, {
-  foreignKey: 'roleId',
-  as: 'userRole'
-})
 
 
 module.exports = Role;
