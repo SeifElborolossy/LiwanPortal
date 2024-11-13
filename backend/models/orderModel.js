@@ -1,6 +1,5 @@
 const Sequelize = require("sequelize");
 const db = require("../config/db");
-const generateId = require("../utils/generateid");
 
 const Order = db.define(
   "order",
@@ -10,7 +9,6 @@ const Order = db.define(
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
-      defaultValue: generateId,
     },
     delivery_status: {
       type: Sequelize.STRING,

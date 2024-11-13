@@ -3,7 +3,6 @@ const Sequelize = require("sequelize");
 const { DataTypes } = require("sequelize");
 const validator = require("validator");
 const db = require("../config/db"); // Import Sequelize instance
-const generateId = require("../utils/generateid");
 
 const Employee = db.define(
   "employee",
@@ -13,7 +12,6 @@ const Employee = db.define(
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
-      defaultValue: generateId,
     },
     name: {
       type: DataTypes.STRING,
