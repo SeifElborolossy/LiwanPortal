@@ -1,7 +1,7 @@
 const { Employee, Role } = require("../models/assosciations");
 const AppError = require("../utils/AppError");
 const catchAsync = require("../utils/catchAsync");
-const encryptPassword = require("../utils/helpers");
+const { encryptPassword } = require("../utils/helpers");
 
 exports.getAllEmployees = catchAsync(async (req, res, next) => {
   const employees = await Employee.findAll({
@@ -23,7 +23,6 @@ exports.getAllEmployees = catchAsync(async (req, res, next) => {
 
 exports.createEmployee = catchAsync(async (req, res, next) => {
   try {
-
     req.body.password = encryptPassword(req.body.password);
 
     // Create the new employee
@@ -40,7 +39,7 @@ exports.createEmployee = catchAsync(async (req, res, next) => {
       message: error.message || "An unexpected error occurred",
     });
   }
-})
+});
 
 exports.getEmployee = catchAsync(async (req, res, next) => {
   const employee = await Employee.findByPk(req.params.id, {

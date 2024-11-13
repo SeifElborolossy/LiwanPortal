@@ -26,12 +26,10 @@ function authorize(allowedRoles) {
 }
 
 exports.login = catchAsync(async (req, res, next) => {
-
-
   if (req.session.user) {
     return res.status(200).json({
       status: "Error",
-      message : "Already logged in",
+      message: "Already logged in",
     });
   }
 
@@ -60,5 +58,19 @@ exports.login = catchAsync(async (req, res, next) => {
     data: {
       user,
     },
+  });
+});
+exports.logout = catchAsync(async (req, res, next) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return next(new AppError("Error logging out. Please try again.", 500));
+    }
+
+    res.clearCookie("session");
+
+    res.status(200).json({
+      status: "success",
+      message: "Logged out successfully",
+    });
   });
 });
