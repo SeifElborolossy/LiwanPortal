@@ -1,4 +1,17 @@
 const AppError = require("../utils/AppError");
+const logger = require("../utils/logger");
+
+const handleSequelizeValidationError = (err) => {
+  const errors = err.errors.map((el) => el.message);
+  const message = `Invalid input data. ${errors.join(". ")}`;
+  return new AppError(message, 400);
+};
+
+const handleSequelizeUniqueConstraintError = (err) => {
+  const fields = Object.keys(err.fields);
+  const message = `Duplicate value for field(s): ${fields.join(", ")}`;
+  return new AppError(message, 400);
+};
 
 const sendErrorDev = (err, req, res) => {
   //A)API
@@ -10,7 +23,7 @@ const sendErrorDev = (err, req, res) => {
       stack: err.stack,
     });
   }
-  //B)Rendered Website
+  logger.error(err)
   return res.status(err.statusCode).json({
     status: "Failed",
     msg: "something went wrong",
@@ -18,43 +31,24 @@ const sendErrorDev = (err, req, res) => {
 };
 
 const sendErrorProd = (err, req, res) => {
-  if (req.originalUrl.startsWith("/api")) {
-    if (err.isOperational) {
-      return res.status(err.statusCode).json({
-        status: err.status,
-        message: err.message,
-      });
-    }
-    //B) Programming or other unknown error: don't leak error details
-    console.error("ERROR 💥", err);
-
-    return res.status(err.statusCode).json({
-      status: "error",
-      message: "Something went very wrong!",
-    });
-  }
-
   //A) Operational, trusted error: send message to client
   if (err.isOperational) {
-    return res.status(err.statusCode).render("error", {
-      title: "Something went wrong!",
-      msg: err.message,
-    });
+    return res.status(err.statusCode).json({
+      status: "error",
+      message: "Something went very wrong!"
+    })
+  }else{
+    res.status(500).json({
+      status  : 'Error' , 
+      message : 'Something went wrong!'
+  })
   }
-  //B) Programming or other unknown error: don't leak error details
-  // 1) Log error
-  console.error("ERROR 💥", err);
-
-  // 2) Send generic message
-  return res.status(err.statusCode).render("error", {
-    title: "Something went wrong!",
-    msg: "Please try again later!",
-  });
+  logger.error(err)
+ 
 };
 
 module.exports = (err, req, res, next) => {
-  // console.log(err.stack);
-
+  
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
 
@@ -64,5 +58,14 @@ module.exports = (err, req, res, next) => {
   error.status = err.status;
   error.stack = err.stack; // Preserve the stack trace if needed
 
-  sendErrorDev(error, req, res);
+   if (err.name === "SequelizeValidationError") {
+    error = handleSequelizeValidationError(err);
+  }
+
+  if (err.name === "SequelizeUniqueConstraintError") {
+    error = handleSequelizeUniqueConstraintError(err);
+  }
+
+  logger.error(err)
+ sendErrorDev(error , req ,res )
 };

@@ -11,7 +11,7 @@ exports.getallCompanies = catchAsync(async (req, res, next) => {
     },
   });
 });
-exports.getCompanyById = catchAsync(async (req, res) => {
+exports.getCompanyById = catchAsync(async (req, res , next) => {
   const companyId = req.params.id;
   const company = await Company.findByPk(companyId);
   if (!company) {
@@ -56,7 +56,7 @@ exports.createCompany = catchAsync(async (req, res, next) => {
   }
  });
 
-exports.updateCompany = catchAsync(async (req, res) => {
+exports.updateCompany = catchAsync(async (req, res ,next) => {
   const companyId = req.params.id;
   const company = await Company.findByPk(companyId);
   if (!company) {
@@ -71,7 +71,7 @@ exports.updateCompany = catchAsync(async (req, res) => {
   });
   
 });
-exports.deleteCompany = catchAsync(async (req, res) => {
+exports.deleteCompany = catchAsync(async (req, res ,next) => {
   const companyId = req.params.id;
   const company = await Company.findByPk(companyId);
   if (!company) {
