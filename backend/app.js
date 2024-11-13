@@ -15,9 +15,8 @@ const orderRouter = require("./routes/order");
 
 const app = express();
 app.use(express.json());
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
-}
+app.use(morgan("dev"));
+
 
 const sessionStore = new SequelizeStore({
   db: sequelize,
@@ -26,7 +25,7 @@ const sessionStore = new SequelizeStore({
   expiration: 24 * 60 * 60 * 1000,
 });
 
-sessionStore.sync().catch((err) => {
+sessionStore.sync({ force : true}).catch((err) => {
   console.error("Error syncing session store:", err);
 });
 
