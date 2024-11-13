@@ -13,7 +13,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import ThemeSwitcher from '../../components/ui/ThemeSwitcher'
 import { Link } from 'react-router-dom';
 
 const priorityColors = {
@@ -85,7 +84,6 @@ export default function OrderDetailsPage() {
 
   return (
     <div className="container mx-auto p-4 space-y-6">
-      <ThemeSwitcher/>
         {/* Header >> Title, Edit & Delete Buttons */}
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Order Details</h1>
