@@ -2,6 +2,7 @@ const Employee = require("./employeeModel");
 const Role = require("./roleModel");
 const Order = require("./orderModel");
 const Company = require("./companyModel");
+const EmployeeOrder = require("./employeeOrderModel");
 
 const setupAssociations = () => {
   // Role and Employee: One-to-Many
@@ -14,14 +15,18 @@ const setupAssociations = () => {
     as: "employeeRole",
   });
 
-  // Employee and Order: One-to-Many
-  Employee.hasMany(Order, {
+  // Define the many-to-many relationship
+  Employee.belongsToMany(Order, {
+    through: EmployeeOrder,
     foreignKey: "employee_id",
-    as: "employeeOrders",
+    otherKey: "order_id",
+    as: "pendingOrders", // You can choose a different alias if you prefer
   });
-  Order.belongsTo(Employee, {
-    foreignKey: "employee_id",
-    as: "employee",
+  Order.belongsToMany(Employee, {
+    through: EmployeeOrder,
+    foreignKey: "order_id",
+    otherKey: "employee_id",
+    as: "notifiedEmployees", // You can choose a different alias if you prefer
   });
 
   // Company and Order: One-to-Many
@@ -43,4 +48,5 @@ module.exports = {
   Role,
   Order,
   Company,
+  EmployeeOrder,
 };

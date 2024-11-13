@@ -60,7 +60,7 @@ const Order = db.define(
       },
     },
     details: {
-      type: Sequelize.STRING,
+      type: Sequelize.JSON,
       allowNull: false,
       validate: {
         notNull: {
@@ -99,9 +99,9 @@ const Order = db.define(
         },
       },
     },
-    completed: {
-      type: Sequelize.BOOLEAN,
-      defaultValue: false,
+    status: {
+      type: Sequelize.STRING,
+      defaultValue: "Pending Approval",
     },
   },
   {

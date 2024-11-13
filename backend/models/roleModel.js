@@ -34,6 +34,18 @@ const Role = db.define(
         },
       },
     },
+    precedence: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "Role precedence cannot be null",
+        },
+        isInt: {
+          msg: "Role precedence must be an integer",
+        },
+      },
+    },
   },
   {
     timestamps: false,
