@@ -14,7 +14,6 @@ exports.getallCompanies = catchAsync(async (req, res, next) => {
 });
 exports.getCompanyById = catchAsync(async (req, res) => {
   const companyId = req.params.id;
-  console.log('Requested Company ID:', companyId);
   const company = await Company.findByPk(companyId);
   if (!company) {
     return next(new AppError("Company Not Found", 404));
