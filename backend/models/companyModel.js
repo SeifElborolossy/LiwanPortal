@@ -40,6 +40,9 @@ const Company = db.define(
     email: {
       type: Sequelize.STRING,
       allowNull: false,
+      unique: {
+        msg: "This email is already exist",
+      },
       validate: {
         notNull: {
           msg: "Email cannot be null",
