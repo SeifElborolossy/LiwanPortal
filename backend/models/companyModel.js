@@ -1,14 +1,15 @@
 const Sequelize = require("sequelize");
 const db = require("../config/db");
+const generateId = require('../utils/generateID')
 
 const Company = db.define(
   "company",
   {
     id: {
       type: Sequelize.INTEGER,
-      autoIncrement: true,
       allowNull: false,
       primaryKey: true,
+      defaultValue : generateId
     },
     name: {
       type: Sequelize.STRING,
@@ -41,7 +42,7 @@ const Company = db.define(
       type: Sequelize.STRING,
       allowNull: false,
       unique: {
-        msg: "This email is already exist",
+        msg: "This email already exists",
       },
       validate: {
         notNull: {
@@ -89,5 +90,7 @@ const Company = db.define(
     timestamps: false, 
   }
 );
+
+
 
 module.exports = Company;

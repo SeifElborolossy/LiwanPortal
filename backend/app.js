@@ -2,6 +2,8 @@ const express = require("express");
 const session = require("express-session");
 const morgan = require("morgan");
 const companyRouter = require("./routes/company");
+const personRouter = require('./routes/person')
+const roleRouter = require('./routes/role')
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 
 const sequelize = require("./config/db"); // Sequelize instance
@@ -90,6 +92,9 @@ const requireAuth = (req, res, next) => {
   next();
 };
 app.use("/api/v1/companies", companyRouter);
+app.use("/api/v1/persons", personRouter);
+app.use("/api/v1/roles", roleRouter);
+
 
 app.get("/protected", requireAuth, authorize(["test"]), (req, res) => {
   res.json({ message: "This is a protected route", user: req.session.user });

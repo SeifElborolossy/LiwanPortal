@@ -1,14 +1,15 @@
 const Sequelize = require("sequelize");
 const db = require("../config/db");
+const generateId = require('../utils/generateID')
 
 const Order = db.define(
   "order",
   {
     id: {
       type: Sequelize.INTEGER,
-      autoIncrement: true,
       allowNull: false,
       primaryKey: true,
+      defaultValue : generateId
     },
     delivery_status: {
       type: Sequelize.STRING,
@@ -104,11 +105,12 @@ const Order = db.define(
       defaultValue: false,
     },
   },
-  {
-    timestamps: true,
-    createdAt: "created_at",
-    updatedAt: "updated_at",
-  }
+  // {
+  //   timestamps: true,
+  //   createdAt: "created_at",
+  //   updatedAt: "updated_at",
+  // }
 );
+
 
 module.exports = Order;

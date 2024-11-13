@@ -1,14 +1,18 @@
 // models/Person.js
+const Sequelize = require("sequelize");
 const { DataTypes } = require("sequelize");
 const validator = require("validator");
-const sequelize = require("../config/db"); // Import Sequelize instance
+const db = require("../config/db"); // Import Sequelize instance
+const generateId = require('../utils/generateID')
 
-const Person = sequelize.define("Person", {
+
+
+const Person = db.define("Person", {
   id: {
     type: Sequelize.INTEGER,
-    autoIncrement: true,
     allowNull: false,
     primaryKey: true,
+    defaultValue : generateId
   },
   name: {
     type: DataTypes.STRING,
@@ -78,5 +82,7 @@ const Person = sequelize.define("Person", {
     },
   },
 });
+
+
 
 module.exports = Person;
