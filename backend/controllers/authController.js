@@ -12,9 +12,9 @@ exports.requireAuth = (req, res, next) => {
   next();
 };
 
-function authorize(allowedRoles) {
+exports.authorize = (allowedRoles) => {
   return (req, res, next) => {
-    const role = req.session.user.role;
+    const role = req.session.user.role.name;
     console.log(role);
 
     if (role && allowedRoles.includes(role)) {
@@ -23,7 +23,7 @@ function authorize(allowedRoles) {
 
     res.status(403).send("Access forbidden: Insufficient permissions");
   };
-}
+};
 
 exports.login = catchAsync(async (req, res, next) => {
   if (req.session.user) {
@@ -35,7 +35,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
   let { email, password } = req.body;
 
-  const user = await Employee.findOne({ where: { email } });
+  const user = await Employee.findOne({ where: { email }, include: "role" });
 
   if (user) {
     const isPasswordValid = comparePassword(password, user.password);
@@ -51,6 +51,7 @@ exports.login = catchAsync(async (req, res, next) => {
   req.session.user = {
     id: user.id,
     name: user.name,
+    role: user.role.name,
   };
 
   res.status(200).json({

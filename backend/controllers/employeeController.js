@@ -119,7 +119,7 @@ exports.getEmployeesByDepartment = catchAsync(async (req, res, next) => {
 
 exports.updateEmployeeRole = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  const { role, roleId } = req.body;
+  const { roleId } = req.body;
 
   // Verify role exists
   const newRole = await Role.findByPk(roleId);
@@ -134,8 +134,7 @@ exports.updateEmployeeRole = catchAsync(async (req, res, next) => {
   }
 
   await employee.update({
-    role,
-    roleId,
+    role_id: roleId,
   });
 
   res.status(200).json({

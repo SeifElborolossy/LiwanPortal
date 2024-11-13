@@ -87,7 +87,7 @@ const Order = db.define(
         },
       },
     },
-    customer_id: {
+    company_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
       validate: {
