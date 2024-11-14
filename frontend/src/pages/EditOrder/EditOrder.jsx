@@ -1,8 +1,13 @@
+'use client'
+
 import { useState } from 'react'
-import { CalendarIcon, CreditCard, FileText, Package, Trash2, Users } from "lucide-react"
+import { CalendarIcon, FileText, Package, Trash2, Users } from 'lucide-react'
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +18,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import ThemeSwitcher from '../../components/ui/ThemeSwitcher'
+
 
 const priorityColors = {
   Critical: "bg-red-500",
@@ -31,61 +36,85 @@ const statusColors = {
 }
 
 // eslint-disable-next-line react/prop-types
-function StatusBadge({ status }) {
+function StatusBadge({ status, onChange }) {
   return (
     <div>
-      
-    <Badge className={`${statusColors[status]} text-white`}>
-      {status}
-    </Badge>
+      <Select onValueChange={onChange} defaultValue={status}>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Select status" />
+        </SelectTrigger>
+        <SelectContent>
+          {Object.keys(statusColors).map((s) => (
+            <SelectItem key={s} value={s}>
+              <Badge className={`${statusColors[s]} text-white`}>{s}</Badge>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   )
 }
 
 // eslint-disable-next-line react/prop-types
-function PriorityBadge({ priority }) {
+function PriorityBadge({ priority, onChange }) {
   return (
-    <Badge className={`${priorityColors[priority]} text-white`}>
-      {priority}
-    </Badge>
+    <Select onValueChange={onChange} defaultValue={priority}>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Select priority" />
+      </SelectTrigger>
+      <SelectContent>
+        {Object.keys(priorityColors).map((p) => (
+          <SelectItem key={p} value={p}>
+            <Badge className={`${priorityColors[p]} text-white`}>{p}</Badge>
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   )
-}
-
-const dummyOrderDetails = {
-  orderId: "ORD-12345",
-  orderTitle: "Ergonomic Office Chair",
-  orderDescription: "High-quality ergonomic office chair with advanced features for maximum comfort and productivity.",
-  orderingPerson: {
-    name: "John Doe",
-    email: "john.doe@example.com",
-  },
-  orderCustomer: {
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-  },
-  price: 299.99,
-  deliveryStatus: "Pending",
-  paymentMethod: "Credit Card",
-  orderDetails: "Custom-made ergonomic office chair with lumbar support and adjustable armrests. Color: Midnight Blue.",
-  dateCreated: new Date("2023-06-15T10:30:00"),
-  deliveryDate: new Date("2023-06-25T14:00:00"),
-  attachments: ["https://example.com/order-12345-invoice.pdf", "https://example.com/order-12345-design-specs.pdf"],
-  orderPriority: "Critical",
 }
 
 export default function EditOrderPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [orderDetails, setOrderDetails] = useState({
+    orderId: "ORD-12345",
+    orderTitle: "Ergonomic Office Chair",
+    orderDescription: "High-quality ergonomic office chair with advanced features for maximum comfort and productivity.",
+    orderingPerson: {
+      name: "John Doe",
+      email: "john.doe@example.com",
+    },
+    orderCustomer: {
+      name: "Jane Smith",
+      email: "jane.smith@example.com",
+    },
+    price: 299.99,
+    deliveryStatus: "Pending",
+    paymentMethod: "Credit Card",
+    orderDetails: "Custom-made ergonomic office chair with lumbar support and adjustable armrests. Color: Midnight Blue.",
+    dateCreated: new Date("2023-06-15T10:30:00"),
+    deliveryDate: new Date("2023-06-25T14:00:00"),
+    attachments: ["https://example.com/order-12345-invoice.pdf", "https://example.com/order-12345-design-specs.pdf"],
+    orderPriority: "Critical",
+  })
+
+  const handleInputChange = (e, field) => {
+    setOrderDetails(prev => ({ ...prev, [field]: e.target.value }))
+  }
+
+  const handleNestedInputChange = (e, parent, field) => {
+    setOrderDetails(prev => ({
+      ...prev,
+      [parent]: { ...prev[parent], [field]: e.target.value }
+    }))
+  }
 
   const handleDeleteOrder = () => {
-    // Implement delete logic here
     console.log("Order deleted")
     setIsDeleteDialogOpen(false)
   }
 
   return (
     <div className="container mx-auto p-4 space-y-6">
-      <ThemeSwitcher/>
-        {/* Header >> Title, Edit & Delete Buttons */}
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Edit Order Details</h1>
         <div className="space-x-2">
@@ -95,7 +124,6 @@ export default function EditOrderPage() {
           </Button>
         </div>
       </header>
-      {/* Order Details >> Title & Description */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -106,15 +134,20 @@ export default function EditOrderPage() {
         <CardContent className="space-y-4">
           <div>
             <h3 className="font-semibold mb-2">Order Title:</h3>
-            <p>{dummyOrderDetails.orderTitle}</p>
+            <Input 
+              value={orderDetails.orderTitle} 
+              onChange={(e) => handleInputChange(e, 'orderTitle')} 
+            />
           </div>
           <div>
             <h3 className="font-semibold mb-2">Order Description:</h3>
-            <p>{dummyOrderDetails.orderDescription}</p>
+            <Textarea 
+              value={orderDetails.orderDescription} 
+              onChange={(e) => handleInputChange(e, 'orderDescription')} 
+            />
           </div>
         </CardContent>
       </Card>
-      {/* Order Information >> Order ID, Price, Delivery Status, Payment Method */}
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
@@ -126,26 +159,42 @@ export default function EditOrderPage() {
           <CardContent className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="font-semibold">Order ID:</span>
-              <span>{dummyOrderDetails.orderId}</span>
+              <Input 
+                value={orderDetails.orderId} 
+                onChange={(e) => handleInputChange(e, 'orderId')} 
+                className="w-2/3"
+              />
             </div>
             <div className="flex justify-between items-center">
               <span className="font-semibold">Price:</span>
-              <span>SAR{" "}{dummyOrderDetails.price.toFixed(2)}</span>
+              <Input 
+                type="number"
+                value={orderDetails.price} 
+                onChange={(e) => handleInputChange(e, 'price')} 
+                className="w-2/3"
+              />
             </div>
             <div className="flex justify-between items-center">
               <span className="font-semibold">Status:</span>
-              <StatusBadge status={dummyOrderDetails.deliveryStatus} />
+              <StatusBadge 
+                status={orderDetails.deliveryStatus} 
+                onChange={(value) => setOrderDetails(prev => ({ ...prev, deliveryStatus: value }))}
+              />
             </div>
             <div className="flex justify-between items-center">
               <span className="font-semibold">Priority:</span>
-              <PriorityBadge priority={dummyOrderDetails.orderPriority} />
+              <PriorityBadge 
+                priority={orderDetails.orderPriority} 
+                onChange={(value) => setOrderDetails(prev => ({ ...prev, orderPriority: value }))}
+              />
             </div>
             <div className="flex justify-between items-center">
               <span className="font-semibold">Payment Method:</span>
-              <span className="flex items-center gap-2">
-                <CreditCard className="h-4 w-4" />
-                {dummyOrderDetails.paymentMethod}
-              </span>
+              <Input 
+                value={orderDetails.paymentMethod} 
+                onChange={(e) => handleInputChange(e, 'paymentMethod')} 
+                className="w-2/3"
+              />
             </div>
           </CardContent>
         </Card>
@@ -160,22 +209,37 @@ export default function EditOrderPage() {
           <CardContent className="space-y-6">
             <div>
               <h3 className="font-semibold mb-2">Ordering Employee:</h3>
-              <div className="bg-muted p-3 rounded-md">
-                <p className="font-medium">{dummyOrderDetails.orderingPerson.name}</p>
-                <p className="text-sm text-muted-foreground">{dummyOrderDetails.orderingPerson.email}</p>
+              <div className="bg-muted p-3 rounded-md space-y-2">
+                <Input 
+                  value={orderDetails.orderingPerson.name} 
+                  onChange={(e) => handleNestedInputChange(e, 'orderingPerson', 'name')} 
+                  placeholder="Name"
+                />
+                <Input 
+                  value={orderDetails.orderingPerson.email} 
+                  onChange={(e) => handleNestedInputChange(e, 'orderingPerson', 'email')} 
+                  placeholder="Email"
+                />
               </div>
             </div>
             <div>
               <h3 className="font-semibold mb-2">Ordering Customer:</h3>
-              <div className="bg-muted p-3 rounded-md">
-                <p className="font-medium">{dummyOrderDetails.orderCustomer.name}</p>
-                <p className="text-sm text-muted-foreground">{dummyOrderDetails.orderCustomer.email}</p>
+              <div className="bg-muted p-3 rounded-md space-y-2">
+                <Input 
+                  value={orderDetails.orderCustomer.name} 
+                  onChange={(e) => handleNestedInputChange(e, 'orderCustomer', 'name')} 
+                  placeholder="Name"
+                />
+                <Input 
+                  value={orderDetails.orderCustomer.email} 
+                  onChange={(e) => handleNestedInputChange(e, 'orderCustomer', 'email')} 
+                  placeholder="Email"
+                />
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
-      {/* Order Details >> Ordering Person & Ordering Customer */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -186,20 +250,28 @@ export default function EditOrderPage() {
         <CardContent className="space-y-4">
           <div>
             <h3 className="font-semibold mb-2">Order Title:</h3>
-            <p>{dummyOrderDetails.orderTitle}</p>
+            <Input 
+              value={orderDetails.orderTitle} 
+              onChange={(e) => handleInputChange(e, 'orderTitle')} 
+            />
           </div>
           <div>
             <h3 className="font-semibold mb-2">Order Description:</h3>
-            <p>{dummyOrderDetails.orderDescription}</p>
+            <Textarea 
+              value={orderDetails.orderDescription} 
+              onChange={(e) => handleInputChange(e, 'orderDescription')} 
+            />
           </div>
           <div>
             <h3 className="font-semibold mb-2">Additional Details:</h3>
-            <p>{dummyOrderDetails.orderDetails}</p>
+            <Textarea 
+              value={orderDetails.orderDetails} 
+              onChange={(e) => handleInputChange(e, 'orderDetails')} 
+            />
           </div>
         </CardContent>
       </Card>
 
-      {/* Order Details >> Dates & Attachments */}
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
@@ -211,11 +283,21 @@ export default function EditOrderPage() {
           <CardContent className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="font-semibold">Date Created:</span>
-              <span>{dummyOrderDetails.dateCreated.toLocaleString()}</span>
+              <Input 
+                type="datetime-local"
+                value={orderDetails.dateCreated.toISOString().slice(0, 16)} 
+                onChange={(e) => setOrderDetails(prev => ({ ...prev, dateCreated: new Date(e.target.value) }))} 
+                className="w-2/3"
+              />
             </div>
             <div className="flex justify-between items-center">
               <span className="font-semibold">Delivery Date:</span>
-              <span>{dummyOrderDetails.deliveryDate.toLocaleString()}</span>
+              <Input 
+                type="datetime-local"
+                value={orderDetails.deliveryDate.toISOString().slice(0, 16)} 
+                onChange={(e) => setOrderDetails(prev => ({ ...prev, deliveryDate: new Date(e.target.value) }))} 
+                className="w-2/3"
+              />
             </div>
           </CardContent>
         </Card>
@@ -228,14 +310,20 @@ export default function EditOrderPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {dummyOrderDetails.attachments.length > 0 ? (
+            {orderDetails.attachments.length > 0 ? (
               <ul className="space-y-2">
-                {dummyOrderDetails.attachments.map((attachment, index) => (
+                {orderDetails.attachments.map((attachment, index) => (
                   <li key={index} className="flex items-center gap-2">
                     <FileText className="h-4 w-4" />
-                    <a href={attachment} className="text-blue-500 hover:underline">
-                      Attachment {index + 1}
-                    </a>
+                    <Input 
+                      value={attachment} 
+                      onChange={(e) => {
+                        const newAttachments = [...orderDetails.attachments]
+                        newAttachments[index] = e.target.value
+                        setOrderDetails(prev => ({ ...prev, attachments: newAttachments }))
+                      }} 
+                      className="flex-grow"
+                    />
                   </li>
                 ))}
               </ul>
@@ -245,8 +333,6 @@ export default function EditOrderPage() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Delete Order Confirmation Dialog */}
 
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
