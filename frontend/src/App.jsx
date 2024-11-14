@@ -16,6 +16,7 @@ const App = () => {
     <BrowserRouter>
       <Fragment>
         <ThemeSwitcher/>
+        <ThemeSwitcher/>
         <Routes>
             <Route exact path="/" element= {<LiwanPortal/>}/>
             <Route exact path="/order-history" element= {<OrderHistory/>}/>
