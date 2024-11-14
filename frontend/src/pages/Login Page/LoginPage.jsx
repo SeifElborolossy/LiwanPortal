@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import '../../components/ui/i18n'; // Import i18n config
 import ThemeSwitcher from '../../components/ui/ThemeSwitcher';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
     const { t, i18n } = useTranslation();
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const [loginMethod, setLoginMethod] = useState('email'); // Choose email/phone
-  
+    const [loginMethod, setLoginMethod] = useState('email'); // Choose email/extension
+    const navigate = useNavigate();
     const onSubmit = (data) => {
-      console.log('Login Data:', data);
+      console.log(data);
+      navigate('/');
     };
   
     useEffect(() => {
@@ -38,7 +40,7 @@ const LoginPage = () => {
           </button>
         </div>
   
-        <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md space-y-6 bg-input shadow-black shadow-sm dark:bg-gray-800 p-6 rounded-lg">
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md space-y-6  shadow-black shadow-sm p-6 rounded-lg">
           
           
           {/* Welcome Back message */}
@@ -50,7 +52,7 @@ const LoginPage = () => {
           
           {/* "Login with" label */}
           <div className="mb-4">
-            <label className="block text-black dark:text-white text-xl mb-4 font-bold">{t('loginWith')}:</label>
+            <label className="block  text-xl mb-4 font-bold">{t('loginWith')}:</label>
             <div className={`flex ${i18n.language === 'en' ? 'ar' : 'en'} space-x-4`}>
               <div className="flex  space-x-2">
                 <input
@@ -63,7 +65,7 @@ const LoginPage = () => {
                 />
                 <label
                   htmlFor="emailOption"
-                  className="cursor-pointer px-4 py-2 flex items-center border border-gray-300 rounded-full transition-all peer-checked:bg-[#EDCEA2] peer-checked:text-white peer-checked:border-blue-500"
+                  className="cursor-pointer px-4 py-2 flex items-center border border-gray-300 rounded-full transition-all peer-checked:bg-[#EDCEA2] peer-checked:text-black peer-checked:border-blue-500"
                 >
                   {t('email')}
                 </label>
@@ -71,17 +73,17 @@ const LoginPage = () => {
               <div className="flex items-center space-x-2">
                 <input
                   type="radio"
-                  id="phoneOption"
-                  value="phone"
-                  checked={loginMethod === 'phone'}
-                  onChange={() => setLoginMethod('phone')}
+                  id="extensionOption"
+                  value="extension"
+                  checked={loginMethod === 'extension'}
+                  onChange={() => setLoginMethod('extension')}
                   className="hidden peer"
                 />
                 <label
-                  htmlFor="phoneOption"
-                  className="cursor-pointer px-4 py-2 flex items-center border border-gray-300 rounded-full transition-all peer-checked:bg-[#EDCEA2] peer-checked:text-white peer-checked:border-blue-500"
+                  htmlFor="extensionOption"
+                  className="cursor-pointer px-4 py-2 flex items-center border border-gray-300 rounded-full transition-all peer-checked:bg-[#EDCEA2] peer-checked:text-black peer-checked:border-blue-500"
                 >
-                  {t('phone')}
+                  {t('extension')}
                 </label>
               </div>
             </div>
@@ -91,7 +93,7 @@ const LoginPage = () => {
           {/* Conditional rendering based on login method */}
           {loginMethod === 'email' ? (
             <div>
-              <label htmlFor="email" className="block mb-1 font-bold">{t('email')}</label>
+              <label htmlFor="email" className="block mb-1 font-bold">{t('email')+':'}</label>
               <input
                 id="email"
                 type="email"
@@ -102,28 +104,28 @@ const LoginPage = () => {
                     message: t('invalidEmail'),
                   },
                 })}
-                className={`w-full px-4 py-2 border  rounded-md bg-white dark:bg-gray-800 text-black dark:text-white transition-colors ${i18n.language === 'ar' ? 'text-right' : 'text-left'}`}
+                className={`w-full px-4 py-2 border  rounded-md border-gray-400 dark:bg-gray-800  transition-colors`}
                 placeholder={t('enterEmail')}
               />
               <p className="text-red-500 h-3">{errors.email && errors.email.message}</p>
             </div>
           ) : (
             <div>
-              <label htmlFor="phone" className="block mb-1 font-bold">{t('phone')+':'}</label>
+              <label htmlFor="extension" className="block mb-1 font-bold">{t('extension')+':'}</label>
               <input
-                id="phone"
+                id="extension"
                 type="tel"
-                {...register('phone', { 
+                {...register('extension', { 
                   required: t('required'), 
                   pattern: { 
                     value: /^[0-9]+$/, 
-                    message: t('invalidPhoneNumber') 
+                    message: t('invalidExtensionNumber') 
                   } 
                 })}
-                className={`w-full px-4 py-2 border rounded-md bg-white dark:bg-gray-800 text-black dark:text-white transition-colors ${i18n.language === 'ar' ? 'text-right' : 'text-left'}`}
-                placeholder={t('enterPhone')}
+                className={`w-full px-4 py-2 border rounded-md border-gray-400 dark:bg-gray-800 transition-colors ${i18n.language === 'ar' ? 'text-right' : 'text-left'}`}
+                placeholder={t('enterExtension')}
               />
-              <p className="text-red-500 h-3">{errors.phone && errors.phone.message}</p>
+              <p className="text-red-500 h-3">{errors.extension && errors.extension.message}</p>
             </div>
           )}
   
@@ -133,7 +135,7 @@ const LoginPage = () => {
               id="password"
               type="password"
               {...register('password', { required: t('required') })}
-              className={`w-full px-4 py-2 border rounded-md bg-white dark:bg-gray-800 text-black dark:text-white transition-colors ${i18n.language === 'ar' ? 'text-right' : 'text-left'}`}
+              className={`w-full px-4 py-2 border rounded-md border-gray-400 dark:bg-gray-800  transition-colors ${i18n.language === 'ar' ? 'text-right' : 'text-left'}`}
               placeholder={t('enterPassword')}
             />
             <p className="text-red-500 h-3">{errors.password && errors.password.message}</p>
@@ -144,7 +146,7 @@ const LoginPage = () => {
             <div className='flex-direction:column '>
           <button
             type="submit"
-            className="w-full mb-1 py-3 bg-[#EDCEA2] text-black rounded-md transition-colors hover:bg-[#e1c590] dark:bg-[#EDCEA2] dark:text-black dark:hover:bg-[#d4b581]"
+            className="w-full mb-1 py-3 font-bold text-lg bg-[#EDCEA2] rounded-md transition-colors   dark:text-black hover:bg-[#e1c590]"
           >
             {t('login')}
           </button>
