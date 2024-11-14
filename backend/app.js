@@ -25,9 +25,9 @@ const sessionStore = new SequelizeStore({
   expiration: 24 * 60 * 60 * 1000,
 });
 
-sessionStore.sync({ force : true}).catch((err) => {
-  console.error("Error syncing session store:", err);
-});
+// sessionStore.sync({ force : true}).catch((err) => {
+//   console.error("Error syncing session store:", err);
+// });
 
 app.use(
   session({

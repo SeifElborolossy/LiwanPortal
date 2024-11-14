@@ -9,7 +9,7 @@ exports.getAllRoles = catchAsync(async (req, res, next) => {
     include: [
       {
         model: Employee,
-        as: "users",
+        as: "employees",
         attributes: ["id", "name", "email"], // Only include fields you need
       },
     ],
@@ -25,11 +25,12 @@ exports.getAllRoles = catchAsync(async (req, res, next) => {
 });
 
 exports.createRole = catchAsync(async (req, res, next) => {
-  const { name, permissions } = req.body;
+  const { name, permissions, precedence } = req.body;
 
   const role = await Role.create({
     name,
     permissions,
+    precedence
   });
 
   res.status(201).json({
@@ -71,17 +72,17 @@ exports.checkPermission = (requiredPermission) => {
       include: [
         {
           model: Role,
-          as: "userRole",
+          as: "employeeRole",
         },
       ],
     });
 
-    if (!employee || !employee.userRole) {
+    if (!employee || !employee.employeeRole) {
       return next(new AppError("Access denied", 401));
     }
 
     const hasPermission =
-      employee.userRole.permissions.includes(requiredPermission);
+      employee.employeeRole.permissions.includes(requiredPermission);
 
     if (!hasPermission) {
       return next(new AppError("Access Denied!!", 403));

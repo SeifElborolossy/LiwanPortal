@@ -99,10 +99,23 @@ const Order = db.define(
         },
       },
     },
-    status: {
-      type: Sequelize.STRING,
-      defaultValue: "Pending Approval",
+    current_approver_role_id: {
+      type: Sequelize.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'roles',
+        key: 'id'
+      }
     },
+    approval_chain: {
+      type: Sequelize.JSON,
+      allowNull: true,
+      defaultValue: [], // Will store the history of approvals/rejections
+    },
+    final_status: {
+      type: Sequelize.ENUM('pending', 'approved', 'rejected'),
+      defaultValue: 'pending'
+    }
   },
   {
     timestamps: false,

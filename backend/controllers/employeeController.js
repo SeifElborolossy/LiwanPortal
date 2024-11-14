@@ -8,7 +8,7 @@ exports.getAllEmployees = catchAsync(async (req, res, next) => {
     include: [
       {
         model: Role,
-        as: "userRole",
+        as: "employeeRole",
         attributes: ["name", "permissions"],
       },
     ],
@@ -46,7 +46,7 @@ exports.getEmployee = catchAsync(async (req, res, next) => {
     include: [
       {
         model: Role,
-        as: "userRole",
+        as: "employeeRole",
         attributes: ["name", "permissions"],
       },
     ],
@@ -104,7 +104,7 @@ exports.getEmployeesByDepartment = catchAsync(async (req, res, next) => {
     include: [
       {
         model: Role,
-        as: "userRole",
+        as: "employeeRole",
         attributes: ["name", "permissions"],
       },
     ],

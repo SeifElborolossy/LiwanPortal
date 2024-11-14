@@ -1,7 +1,7 @@
 // Create Auth controller
 
 const catchAsync = require("../utils/catchAsync");
-const Employee = require("../models/employeeModel");
+const {Employee, Role} = require("../models/assosciations");
 const AppError = require("../utils/AppError");
 const { comparePassword } = require("../utils/helpers");
 
@@ -35,7 +35,12 @@ exports.login = catchAsync(async (req, res, next) => {
 
   let { email, password } = req.body;
 
-  const user = await Employee.findOne({ where: { email }, include: "role" });
+  // const user = await Employee.findOne({ where: { email }, include: "role" });
+
+  const user = await Employee.findOne({
+    where: { email },
+    include: { model: Role, as: "employeeRole" },
+  });
 
   if (user) {
     const isPasswordValid = comparePassword(password, user.password);
@@ -51,7 +56,7 @@ exports.login = catchAsync(async (req, res, next) => {
   req.session.user = {
     id: user.id,
     name: user.name,
-    role: user.role.name,
+    role: user.employeeRole.id,
   };
 
   res.status(200).json({

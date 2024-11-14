@@ -1,124 +1,204 @@
-const { Employee, Role, Order, EmployeeOrder } = require("../models/associations");
-const AppError = require("../utils/AppError");
-const catchAsync = require("../utils/catchAsync");
+const { Employee, Role, Order, EmployeeOrder } = require("../models/assosciations");
+const AppError = require('../utils/AppError');
+const catchAsync = require('../utils/catchAsync');
+const { Sequelize } = require('sequelize');
 const validator = require("validator");
+const db = require("../config/db"); // Sequelize instance
 
-exports.createOrder   
- = catchAsync(async (req, res, next) => {
-  const { customerId, employeeId, price, details, attachment } = req.body;
+const getRequiredPrecedence = (price) => {
+  if (price > 1000) return 5;
+  if (price > 500) return 3;
+  return 1;
+};
 
-  // Input validation
-  if (
-    !customerId ||
-    !employeeId ||
-    !price ||
-    !details ||
-    !validator.isNumeric(price.toString())
-  ) {
-    return next(new AppError("Invalid input data", 400));
-  }
+// Helper function to find the next role
+const findNextRole = async (currentPrecedence, transaction) => {
+  return await Role.findOne({
+    where: {
+      precedence: {
+        [Sequelize.Op.gt]: currentPrecedence
+      }
+    },
+    order: [['precedence', 'ASC']],
+    transaction
+  });
+};
 
-  // Create the new order
-  const order = await Order.create({
-    customerId,
-    employeeId,
-    price,
-    details,
-    attachment,
-    delivery_status: "pending",
-    payment_method: "cash",
-    created_at: new Date(),
+// Function to initiate the approval process
+const initiateApprovalProcess = async (order, transaction) => {
+
+
+
+  const orderingEmployee = await Employee.findByPk(order.employee_id, {
+    include: [{ model: Role, as: "employeeRole" }],
+    transaction
   });
 
-  // Start the role-based notification process
-  try {
-    await initiateNotificationProcess(order);
-  } catch (error) {
-    // Log the error for debugging
-    console.error("Error initiating notification process:", error);
+console.log(order.employee_id);
 
-    // Return a generic error message to the client
-    return next(new AppError("Failed to create order", 500));
-  }
-
-  res.status(201).json({
-    status: "success",
-    data: { order },
-  });
-});
-
-// Role-based notification process logic
-const initiateNotificationProcess = async (order) => {
-  // Find the employee associated with the order
-  const employee = await Employee.findByPk(order.employeeId, {
-    include: [
-      {
-        model: Role,
-        as: "employeeRole",
-      },
-    ],
-  });
-
-  if (!employee || !employee.employeeRole) {
+  if (!orderingEmployee || !orderingEmployee.employeeRole) {
     throw new AppError("Employee or role not found", 404);
   }
 
-  // Check if the employee's role has sufficient precedence
-  if (employee.employeeRole.precedence >= getRequiredPrecedence(order.price)) {
-    // No need for further notification, the employee can approve/deny
+  const requiredPrecedence = getRequiredPrecedence(order.price);
+  
+  // If employee has sufficient precedence, they can self-approve
+  if (orderingEmployee.employeeRole.precedence >= requiredPrecedence) {
+    await order.update({
+      final_status: 'approved',
+      approval_chain: [{
+        role_id: orderingEmployee.role_id,
+        status: 'approved',
+        timestamp: new Date(),
+        comment: 'Self-approved based on precedence'
+      }]
+    }, { transaction });
     return;
   }
 
-  // Find the next higher role
-  const nextHigherRoleId = await getNextHigherRole(employee.employeeRole.precedence);
-
-  if (!nextHigherRoleId) {
-    // No higher role found, handle accordingly (e.g., assign to a default role)
-    // For now, throw an error
-    throw new AppError("No higher role found for notification", 500);
+  // Find the next role that needs to review
+  const nextRole = await findNextRole(orderingEmployee.employeeRole.precedence, transaction);
+  if (!nextRole) {
+    throw new AppError("No suitable approver found", 500);
   }
 
-  // Add the order to the higher role's list of orders
-  const higherRoleEmployee = await Employee.findByPk(nextHigherRoleId);
-
-  try {
-    await higherRoleEmployee.addPendingOrder(order); // Use the new association method
-  } catch (error) {
-    // Handle potential errors during the association
-    console.error("Error adding order to employee queue:", error);
-    throw new AppError("Failed to notify higher role", 500);
-  }
+  // Update order with initial approver
+  await order.update({
+    current_approver_role_id: nextRole.id,
+    approval_chain: [{
+      role_id: orderingEmployee.role_id,
+      status: 'forwarded',
+      timestamp: new Date(),
+      comment: 'Insufficient precedence, forwarded to next level'
+    }]
+  }, { transaction });
 };
 
-// Helper function to determine required precedence based on order price
-const getRequiredPrecedence = (price) => {
-  // Implement your logic here based on price ranges
-  if (price > 1000) {
-    return 3; // Example: Precedence 3 required for orders over $1000
-  } else if (price > 500) {
-    return 2; // Example: Precedence 2 required for orders over $500
-  } else {
-    return 1; // Example: Precedence 1 for other orders
-  }
-};
+// Controller for handling role decisions
+exports.handleRoleDecision = catchAsync(async (req, res, next) => {
+  const { orderId } = req.params;
+  const { decision, comment } = req.body;
+  const employee_id = req.session.user.id; // Assuming authenticated user
 
-// Helper function to find the next higher role
-const getNextHigherRole = async (currentPrecedence) => {
+  const transaction = await db.transaction();
+
   try {
-    const role = await Role.findOne({
-      where: {
-        precedence: {
-          // Find the role with the nearest higher precedence
-          $gt: currentPrecedence, // Greater than the current precedence
-        },
-      },
-      order: [["precedence", "ASC"]], // Order by precedence in ascending order
+    const employee = await Employee.findByPk(employee_id, {
+      include: [{ model: Role, as: "employeeRole" }],
+      transaction
     });
 
-    return role ? role.id : null; // Return role ID or null if no higher role is found
+    const order = await Order.findByPk(orderId, { transaction });
+
+    if (!order || !employee || !employee.employeeRole) {
+      throw new AppError("Order or employee role not found", 404);
+    }
+
+    if (order.current_approver_role_id !== employee.role_id) {
+      throw new AppError("Not authorized to make this decision", 403);
+    }
+
+    const requiredPrecedence = getRequiredPrecedence(order.price);
+
+    // Update approval chain
+    const approvalChain = [...(order.approval_chain || []), {
+      role_id: employee.role_id,
+      status: decision,
+      timestamp: new Date(),
+      comment
+    }];
+
+    if (decision === 'approve') {
+      if (employee.employeeRole.precedence >= requiredPrecedence) {
+        // Final approval
+        await order.update({
+          final_status: 'approved',
+          approval_chain: approvalChain,
+          current_approver_role_id: null
+        }, { transaction });
+      } else {
+        // Find next role in hierarchy
+        const nextRole = await findNextRole(employee.employeeRole.precedence, transaction);
+        if (!nextRole) {
+          throw new AppError("No higher role found for approval", 500);
+        }
+
+        await order.update({
+          approval_chain: approvalChain,
+          current_approver_role_id: nextRole.id
+        }, { transaction });
+      }
+    } else if (decision === 'reject') {
+      await order.update({
+        final_status: 'rejected',
+        approval_chain: approvalChain,
+        current_approver_role_id: null
+      }, { transaction });
+    } else {
+      throw new AppError("Invalid decision", 400);
+    }
+
+    await transaction.commit();
+
+    res.status(200).json({
+      status: "success",
+      data: { order }
+    });
   } catch (error) {
-    // Handle any potential errors here
-    console.error("Error finding next higher role:", error);
-    throw error; // Re-throw the error to be caught by the global error handler
+    await transaction.rollback();
+    return next(new AppError(error.message, 500));
   }
-};
+});
+
+// Controller for creating an order (unchanged)
+exports.createOrder = catchAsync(async (req, res, next) => {
+  const { company_id, employee_id, price, details, attachment } = req.body;
+
+  // Input validation
+  if (!company_id || !employee_id || !price || !details || 
+      !validator.isNumeric(price.toString())) {
+    return next(new AppError("Invalid input data (Can't be null)", 400));
+  }
+
+  // Start transaction
+  const transaction = await db.transaction();
+
+  try {
+    // Create the new order
+    const order = await Order.create({
+      company_id,
+      employee_id,
+      price,
+      details,
+      attachment,
+      delivery_status: "pending",
+      payment_method: "cash",
+      created_at: new Date(),
+      final_status: 'pending'
+    }, { transaction });
+
+    // Initialize the approval process
+    await initiateApprovalProcess(order, transaction);
+
+    await transaction.commit();
+
+    res.status(201).json({
+      status: "success",
+      data: { order }
+    });
+  } catch (error) {
+    await transaction.rollback();
+    return next(new AppError(error.message, 500));
+  }
+});
+
+// Controller for getting all orders (unchanged)
+exports.getAllOrders = catchAsync(async (req, res, next) => {
+  const orders = await Order.findAll();
+  res.status(200).json({
+    status: "success",
+    data: {
+      orders
+    }
+  });
+});

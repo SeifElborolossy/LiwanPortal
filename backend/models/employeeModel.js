@@ -47,8 +47,8 @@ const Employee = db.define(
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notNull: { msg: "Role is required." },
-        notEmpty: { msg: "Role cannot be empty." },
+        notNull: { msg: "nationality is required." },
+        notEmpty: { msg: "nationality cannot be empty." },
       },
     },
     department: {
