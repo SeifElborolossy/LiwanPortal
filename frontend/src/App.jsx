@@ -8,6 +8,8 @@ import Schedule from './pages/Schedule/Schedule';
 import SubmitOrder from "./pages/Submit Order/SubmitOrder";
 import PageNotFound from "./pages/PageNotFound/pageNotFound";
 import LoginPage from "./pages/Login Page/LoginPage";
+import ThemeSwitcher from "./components/ui/ThemeSwitcher";
+
 
 
 
@@ -15,6 +17,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <Fragment>
+        <ThemeSwitcher/>
         <Routes>
             <Route exact path="/" element= {<LiwanPortal/>}/>
             <Route exact path="/order-history" element= {<OrderHistory/>}/>
