@@ -6,6 +6,8 @@ import { Fragment} from 'react';
 import EditOrder from './pages/EditOrder/EditOrder';
 import Schedule from './pages/Schedule/Schedule';
 import SubmitOrder from "./pages/Submit Order/SubmitOrder";
+import PageNotFound from "./pages/PageNotFound/pageNotFound";
+import LoginPage from "./pages/Login Page/LoginPage";
 
 
 
@@ -20,6 +22,8 @@ const App = () => {
             <Route exact path="/edit-order" element= {<EditOrder/>}/>
             <Route exact path="/schedule" element= {<Schedule/>}/>
             <Route exact path="/submit-order" element= {<SubmitOrder/>}/>
+            <Route exact path="/page-not-found" element= {<PageNotFound/>}/>
+            <Route exact path="/login-page" element= {<LoginPage/>}/>
         </Routes>
       </Fragment>        
     </BrowserRouter>

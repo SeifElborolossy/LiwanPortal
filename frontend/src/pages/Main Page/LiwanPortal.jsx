@@ -16,7 +16,7 @@ const portalItems = [
   { name: 'Inventory', icon: Package, link: '/inventory' },
   { name: 'Manufacturing', icon: Factory, link: '/manufacturing' },
   { name: 'Sales', icon: BarChart2, link: '/sales' },
-  { name: 'Profiles', icon: Users, link: '/profiles' },
+  { name: 'Profiles', icon: Users, link: '/login-page' },
   { name: 'Dashboard', icon: Smartphone, link: '/dashboard' },
   { name: 'Payments', icon: CreditCard, link: '/payments' },
 ];
