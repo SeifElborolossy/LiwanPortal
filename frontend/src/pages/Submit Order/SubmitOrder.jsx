@@ -119,7 +119,7 @@ const formSchema = z.object({
                 </div>
                 <div className="flex items-start justify-center lg:justify-start py-8 px-4 lg:pr-14">
                 <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 shadow-2xl p-6 lg:p-16 dark:shadow-slate-800 rounded-xl w-full max-w-[700px]">
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 shadow-2xl p-6 lg:p-16 dark:shadow-slate-800 rounded-md w-full max-w-[700px]">
                             <FormField
                                 control={form.control}
                                 name="employeeName"
@@ -193,19 +193,6 @@ const formSchema = z.object({
                                 <FormLabel>URL</FormLabel>
                                 <FormControl>
                                     <Input type="url" placeholder="Enter URL" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="password"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Password</FormLabel>
-                                <FormControl>
-                                    <Input type="password" placeholder="Enter password" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>

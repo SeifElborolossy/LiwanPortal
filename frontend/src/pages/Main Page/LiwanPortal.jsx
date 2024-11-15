@@ -1,5 +1,7 @@
 import { Plane, FileText, HelpCircle, Heart, Truck, CreditCard, 
-  Package, Factory, BarChart2, Users, Smartphone } from "lucide-react";
+  Package, BarChart2, Users, Smartphone, 
+  Ticket,
+  BadgeDollarSign} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -7,17 +9,16 @@ const LiwanPortal = () => {
 const portalItems = [
   { name: 'Order History', icon: Plane, link: '/order-history' ,},
   { name: 'Purchase Order', icon: FileText, link: '/order-details' },
-  { name: 'Submit Order', icon: HelpCircle, link: '/submit-order' },
+  { name: 'Submit Order', icon: BadgeDollarSign, link: '/submit-order' },
   { name: 'Schedule', icon: HelpCircle, link: '/schedule' },
-  { name: 'Health', icon: Heart, link: '/health' },
   { name: 'Social Marketing', icon: Heart, link: '/social-marketing' },
   { name: 'Delivery', icon: Truck, link: '/delivery' },
   { name: 'Inventory', icon: Package, link: '/inventory' },
-  { name: 'Manufacturing', icon: Factory, link: '/manufacturing' },
   { name: 'Sales', icon: BarChart2, link: '/sales' },
   { name: 'Profiles', icon: Users, link: '/login-page' },
-  { name: 'Dashboard', icon: Smartphone, link: '/dashboard' },
+  { name: 'Signatures History', icon: Smartphone, link: '/signatures-history' },
   { name: 'Payments', icon: CreditCard, link: '/payments' },
+  { name: 'Submit Ticket', icon: Ticket, link: 'https://liwan-back-and-front-main-sigma.vercel.app/' },
 ];
 
 return (
