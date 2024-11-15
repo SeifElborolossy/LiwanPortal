@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 
 const LiwanPortal = () => {
 const portalItems = [
+  { name: 'Order Approval', icon: BarChart2, link: '/order-approval',},
   { name: 'Order History', icon: Plane, link: '/order-history' ,},
   { name: 'Purchase Order', icon: FileText, link: '/order-details' },
   { name: 'Submit Order', icon: BadgeDollarSign, link: '/submit-order' },
@@ -14,7 +15,6 @@ const portalItems = [
   { name: 'Social Marketing', icon: Heart, link: '/social-marketing' },
   { name: 'Delivery', icon: Truck, link: '/delivery' },
   { name: 'Inventory', icon: Package, link: '/inventory' },
-  { name: 'Sales', icon: BarChart2, link: '/sales' },
   { name: 'Profiles', icon: Users, link: '/login-page' },
   { name: 'Signatures History', icon: Smartphone, link: '/signatures-history' },
   { name: 'Payments', icon: CreditCard, link: '/payments' },

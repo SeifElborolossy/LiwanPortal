@@ -1,3 +1,5 @@
+// eslint-disable-next-line no-unused-vars
+import React from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import OrderDetails from "./pages/Order Details/OrderDetails";
 import OrderHistory from "./pages/Order History/OrderHistory";
@@ -9,12 +11,15 @@ import PageNotFound from "./pages/PageNotFound/PageNotFound";
 import LoginPage from "./pages/Login Page/LoginPage";
 import ThemeSwitcher from "./components/ui/ThemeSwitcher";
 import { AppSidebar } from "./components/ui/app-sidebar";
+import OrdarApproval from "./pages/Order Approval/OrderApproval"
+
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "./components/ui/sidebar";
 import SignaturesHistory from './pages/Signatures History/SignaturesHistory';
+import { ThemeProvider } from '../src/components/ui/ThemeContext';
 
 const AppContent = () => {
   const location = useLocation();
@@ -22,10 +27,11 @@ const AppContent = () => {
 
   return (
     <div className="min-h-screen">
-      <ThemeSwitcher />
+       
       
       {showSidebar ? (
         <div className="flex min-h-screen">
+           <ThemeSwitcher/>
           <SidebarProvider>
             <AppSidebar />
             <SidebarInset className="flex-1">
@@ -39,6 +45,7 @@ const AppContent = () => {
                   <Route path="/submit-order" element={<SubmitOrder />} />
                   <Route path="/page-not-found" element={<PageNotFound />} />
                   <Route path='/signatures-history' element={<SignaturesHistory />} />
+                  <Route exact path="/order-approval" element= {<OrdarApproval/>}/>
                 </Routes>
               </div>
             </SidebarInset>
@@ -58,7 +65,9 @@ const AppContent = () => {
 
 const App = () => (
   <BrowserRouter>
-    <AppContent />
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   </BrowserRouter>
 );
 

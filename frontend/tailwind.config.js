@@ -11,6 +11,7 @@ export const theme = {
     colors: {
       background: 'hsl(var(--background))',
       foreground: 'hsl(var(--foreground))',
+      'theme-color': 'var(--theme-color)',
       card: {
         DEFAULT: 'hsl(var(--card))',
         foreground: 'hsl(var(--card-foreground))'

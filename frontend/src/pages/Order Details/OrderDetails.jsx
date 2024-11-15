@@ -87,7 +87,7 @@ export default function OrderDetailsPage() {
         {/* Header >> Title, Edit & Delete Buttons */}
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Order Details</h1>
-        <div className="space-x-2">
+        <div className="space-x-2 flex ">
           <Link to='/edit-order'>
             <Button>Edit Order</Button>
           </Link>
