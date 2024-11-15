@@ -79,7 +79,11 @@
   }
   body {
     @apply bg-background text-foreground;
+    overflow: auto;
   }
+  body::-webkit-scrollbar {
+    display: none;
+}
 }
 html {
   scroll-behavior: smooth;

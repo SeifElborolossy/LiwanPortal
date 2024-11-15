@@ -78,7 +78,7 @@ export default function Schedule() {
   };
 
   return (
-    <div className="h-screen p-4 flex flex-col">
+    <div className="h-screen p-10 flex flex-col">
       <h1 className="text-2xl font-bold mb-4">Schedule</h1>
       <div className="flex-grow">
       <Calendar

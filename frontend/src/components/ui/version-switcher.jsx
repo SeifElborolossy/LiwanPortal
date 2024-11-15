@@ -32,7 +32,7 @@ export function VersionSwitcher({
                 <GalleryVerticalEnd className="size-4" />
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
-                <span className="font-bold text-[#d4ab71] hover:text-black duration-300">Liwan Portal</span>
+                <span className="font-bold">Liwan Portal</span>
                 {/* <span className="">v{selectedVersion}</span> */}
               </div>
               <ChevronsUpDown className="ml-auto" />

@@ -27,11 +27,10 @@ const AppContent = () => {
 
   return (
     <div className="min-h-screen">
-       
+       <ThemeSwitcher/>
       
       {showSidebar ? (
         <div className="flex min-h-screen">
-           <ThemeSwitcher/>
           <SidebarProvider>
             <AppSidebar />
             <SidebarInset className="flex-1">

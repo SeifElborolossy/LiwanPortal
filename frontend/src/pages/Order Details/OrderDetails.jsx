@@ -83,11 +83,11 @@ export default function OrderDetailsPage() {
   }
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
+    <div className="container mx-auto p-10 space-y-6">
         {/* Header >> Title, Edit & Delete Buttons */}
       <header className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Order Details</h1>
-        <div className="space-x-2 flex ">
+        <h1 className="md:text-3xl font-bold text-xl">Order Details</h1>
+        <div className="space-x-2 flex">
           <Link to='/edit-order'>
             <Button>Edit Order</Button>
           </Link>

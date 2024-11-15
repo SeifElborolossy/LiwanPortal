@@ -111,7 +111,7 @@ export default function OrderHistory() {
   return (
     <div className="mx-auto py-10 w-full min-h-screen">
 
-      <div className="content container mx-auto p-8">
+      <div className="content container mx-auto p-10">
         <h1 className="text-2xl font-bold mb-2">Orders History</h1>
         <p className="text-gray-600 mb-6">
           In this order details section, you can review and manage all orders

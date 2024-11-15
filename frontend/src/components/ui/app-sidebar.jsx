@@ -50,6 +50,18 @@ const data = {
           title: "Signatures History",
           url: "/signatures-history",
         },
+        {
+          title: "Orders Approval",
+          url: "/order-approval",
+        },
+        {
+          title: "Schedule",
+          url: "/schedule",
+        },
+        {
+          title: "Login",
+          url: "/login-page",
+        },
         // {
         //   title: "Styling",
         //   url: "#",
